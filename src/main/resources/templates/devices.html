@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <link th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+    <title>Devices</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <h1>Devices</h1>
+    </div>
+    <div class="row">
+        <table class="table">
+            <tr>
+                <th>SNo</th>
+                <th>ID</th>
+                <th>IMEI</th>
+                <th>Platform</th>
+                <th>Version</th>
+                <th>BYOD</th>
+                <th>User</th>
+            </tr>
+            <tr th:each="device : ${devices}">
+                <td th:text="${device.sno}"></td>
+                <td th:text="${device.id}"></td>
+                <td th:text="${device.imei}"></td>
+                <td th:text="${device.platform}"></td>
+                <td th:text="${device.version}"></td>
+                <td th:text="${device.byod}"></td>
+                <td th:text="${device.userId}"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-2">
+            <input class="form-control pagination" disabled="disabled" th:value="' Count: ' + ${devices.totalElements}"/>
+        </div>
+        <div class="form-group col-md-1">
+            <select class="form-control pagination" id="pageSizeSelect" >
+                <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}" th:value="${pageSize}" th:selected="${pageSize} == ${selectedPageSize}"></option>
+            </select>
+        </div>
+        <div class="form-group col-md-2">
+            <select class="form-control pagination" id="sortBySelect">
+                <option th:each="sortAttr : ${sortAttrs}" th:text="${sortAttr.key}" th:value="${sortAttr.value}" th:selected="${sortAttr.value} == ${selectedSortAttr}"></option>
+            </select>
+        </div>
+        <div th:if="${devices.totalPages != 1}" class="form-group col-md-6 pagination-centered">
+            <ul class="pagination">
+                <li th:class="${devices.number == 0} ? disabled">
+                    <a class="pageLink" th:href="@{/devices(page=1, size=${selectedPageSize}, sortBy=${selectedSortAttr}, __(${#strings.isEmpty(searchUser)} ? '' : 'userId=${searchUser}')__)}">&laquo;</a>
+                </li>
+                <li th:class="${devices.number == 0} ? disabled">
+                    <a class="pageLink" th:href="@{/devices(page=${devices.number}, size=${selectedPageSize}, sortBy=${selectedSortAttr}, __(${#strings.isEmpty(searchUser)} ? '' : 'userId=${searchUser}')__)}">&larr;</a>
+                </li>
+                <li th:class="${devices.number == (page - 1)} ? 'active pointer-disabled'"
+                    th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                    <a class="pageLink" th:href="@{/devices(page=${page}, size=${selectedPageSize}, sortBy=${selectedSortAttr}, __(${#strings.isEmpty(searchUser)} ? '' : 'userId=${searchUser}')__)}" th:text="${page}"></a>
+                </li>
+                <li th:class="${devices.number + 1 == devices.totalPages} ? disabled">
+                    <a class="pageLink" th:href="@{/devices(page=${devices.number + 2}, size=${selectedPageSize}, sortBy=${selectedSortAttr}, __(${#strings.isEmpty(searchUser)} ? '' : 'userId=${searchUser}')__)}">&rarr;</a>
+                </li>
+                <li th:class="${devices.number + 1 == devices.totalPages} ? disabled">
+                    <a class="pageLink" th:href="@{/devices(page=${devices.totalPages}, size=${selectedPageSize}, sortBy=${selectedSortAttr}, __(${#strings.isEmpty(searchUser)} ? '' : 'userId=${searchUser}')__)}">&raquo;</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/jquery/1.11.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
